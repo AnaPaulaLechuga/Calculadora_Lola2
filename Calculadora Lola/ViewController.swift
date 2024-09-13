@@ -17,14 +17,15 @@ class ViewController: UIViewController {
     var estado_actual: estados_de_la_calculadora = .mostrar_resultado
     
     @IBOutlet weak var texto_a_cambiar: UILabel!
-    /*@IBOutlet weak var operacion_texto: UILabel!
-    @IBOutlet weak var segundo_termino_texto: UILabel!*/
+    @IBOutlet weak var operacion_texto: UILabel!
+    @IBOutlet weak var segundo_termino_texto: UILabel!
     
     @IBOutlet weak var boton_operacion: UIButton!
     @IBOutlet weak var vista_stack: UIStackView!
     
     var botones_interfaz: Dictionary<String, IUBotonCalculadora> = [:]
     var operacion_actual: String? = nil
+    var numero_anterior: Double = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,15 +38,27 @@ class ViewController: UIViewController {
     /// - Parameter sender: <#sender description#>
     @IBAction func que_hacer_al_pushar_boton(_ sender: UIButton) {
         if(estado_actual == estados_de_la_calculadora.seleccionar_numeros){
-            // TODO: Arreglar glitch del text quitando el optional
             if let _mensajero_id = sender.restorationIdentifier{
                 let texto_cache = botones_interfaz[_mensajero_id]?.numero
                 texto_a_cambiar.text = "\(texto_a_cambiar.text ?? "")\(texto_cache!)"
             }
         }
+        else if(estado_actual == estados_de_la_calculadora.mostrar_resultado){
+            if let _mensajero_id = sender.restorationIdentifier{
+                let texto_cache = botones_interfaz[_mensajero_id]?.numero
+                texto_a_cambiar.text = "\(texto_cache!)"
+                estado_actual = estados_de_la_calculadora.seleccionar_numeros
+            }
+        }
         else if (estado_actual == estados_de_la_calculadora.escoger_operacion){
             if let _mensajero_id = sender.restorationIdentifier{
+                
                 operacion_actual = botones_interfaz[_mensajero_id]?.operacion
+                if let numero_actual: String = texto_a_cambiar.text{
+                    numero_anterior = Double(numero_actual) ?? 0.0
+                }
+                
+                texto_a_cambiar.text = ""
                 estado_actual = estados_de_la_calculadora.seleccionar_numeros
             }
             else {
@@ -59,9 +72,9 @@ class ViewController: UIViewController {
         @IBAction func boton_escoger_operacion_pulsado(_ sender: UIButton){
             print("Si lo estoy pulsando")
             
-            if (estado_actual == estados_de_la_calculadora.seleccionar_numeros){
+            if (estado_actual == estados_de_la_calculadora.seleccionar_numeros)
+            {
                 estado_actual = estados_de_la_calculadora.escoger_operacion
- 
             }
             else if (estado_actual == estados_de_la_calculadora.mostrar_resultado)
             {
@@ -73,16 +86,7 @@ class ViewController: UIViewController {
             }
             
             dibujar_numeros_u_operaciones_en_interfaz()
-            /*
-             switch(estado_actual){
-                case .seleccionar_numeros:
-                    estado_actual = .escoger_operacion
-                case .escoger_operacion:
-                    estado_actual = .seleccionar_numeros
-                case .mostrar_resultado:
-                    estado_actual = .escoger_operacion
-            }
-             */
+
         }
         
         
@@ -107,39 +111,15 @@ class ViewController: UIViewController {
                     elemento.referencia_a_boton_interfaz?.setTitle(String(elemento.numero), for: .normal)
                 }
             }
-
-            
-            /*
-             switch(estado_actual){
-                case .escoger_operacion:
-                    for elemento in botones_interfaz.values{
-                        elemento.referencia_a_boton_interfaz?.setTitle(elemento.operacion, for: .normal)
-                            elemento.referencia_a_boton_interfaz?.setTitle("Ñ", for: .selected)
-                }
-                         
-                case .seleccionar_numeros:
-                    for elemento in botones_interfaz.values{
-                        elemento.referencia_a_boton_interfaz?.setTitle(String(elemento.numero), for: .normal)
-                }
-                case .mostrar_resultado:
-                 0 == 0
-            }*/
-            
         }
         
         func identificar_botones(){
-            /*for componente in self.view.subviews{
-             print(componente)
-             }
-             */
             for pila_de_componentes in vista_stack.subviews{
                 for boton in pila_de_componentes.subviews{
-                    //print(type(of: boton))
                     if let identificador = boton.restorationIdentifier{
                         botones_interfaz[identificador]?.referencia_a_boton_interfaz = boton as? UIButton
-                    }
                 }
             }
-            
+        }
     }
 }
