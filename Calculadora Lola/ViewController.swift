@@ -67,7 +67,10 @@ class ViewController: UIViewController {
             {
                 estado_actual = estados_de_la_calculadora.escoger_operacion
             }
-            
+            else if (estado_actual == estados_de_la_calculadora.escoger_operacion)
+            {
+                estado_actual = estados_de_la_calculadora.seleccionar_numeros
+            }
             
             dibujar_numeros_u_operaciones_en_interfaz()
             /*
