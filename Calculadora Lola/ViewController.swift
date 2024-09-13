@@ -122,4 +122,30 @@ class ViewController: UIViewController {
             }
         }
     }
+    
+    
+    @IBAction func obtener_resultado(_ sender: Any) 
+    {
+        if numero_anterior != 0.0 && texto_a_cambiar.text != ""
+        {
+            var numero_actual: Double = 0.0
+            if let numero_actual_string = texto_a_cambiar.text{
+                numero_actual = Double(numero_actual_string) ?? 0.0
+            }
+            
+            switch(operacion_actual) {
+            case "+":
+                texto_a_cambiar.text = "\(numero_anterior + numero_actual)"
+            case "-":
+                texto_a_cambiar.text = "\(numero_anterior - numero_actual)"
+            case "*":
+                texto_a_cambiar.text = "\(numero_anterior * numero_actual)"
+            case "/":
+                texto_a_cambiar.text = "\(numero_anterior / numero_actual)"
+            default:
+                texto_a_cambiar.text = "Hay un error"
+            }
+            estado_actual = estados_de_la_calculadora.mostrar_resultado
+        }
+    }
 }
